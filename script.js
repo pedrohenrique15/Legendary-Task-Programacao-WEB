@@ -1,11 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("task-form");
   const taskInput = document.getElementById("task-input");
+  const taskDate = document.getElementById("task-date");
+  const taskNote = document.getElementById("task-note");
   const taskList = document.getElementById("task-list");
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  // normaliza dados antigos (strings) para objetos { text, completed }
+  // normaliza dados antigos (strings) para objetos { text, date, note, completed }
   tasks = tasks.map((t) =>
-    typeof t === "string" ? { text: t, completed: false } : t,
+    typeof t === "string"
+      ? { text: t, date: "", note: "", completed: false }
+      : {
+          text: t.text || "",
+          date: t.date || "",
+          note: t.note || "",
+          completed: t.completed || false,
+        },
   );
 
   function renderTasks() {
@@ -13,11 +22,21 @@ document.addEventListener("DOMContentLoaded", () => {
     tasks.forEach((task, index) => {
       const li = document.createElement("li");
       if (task.completed) li.classList.add("completed");
+      const dateHtml = task.date
+        ? `<div class="task-meta"><strong>Data:</strong> ${task.date}</div>`
+        : "";
+      const noteHtml = task.note
+        ? `<div class="task-note"><strong>Anotações:</strong> ${task.note}</div>`
+        : "";
       li.innerHTML = `
-      <label class="task-row">
-        <input type="checkbox" class="done-checkbox" onclick="toggleComplete(${index})" ${task.completed ? "checked" : ""} />
-        <span>${task.text}</span>
-      </label>
+      <div class="task-content">
+        <label class="task-row">
+          <input type="checkbox" class="done-checkbox" onclick="toggleComplete(${index})" ${task.completed ? "checked" : ""} />
+          <span>${task.text}</span>
+        </label>
+        ${dateHtml}
+        ${noteHtml}
+      </div>
       <div class="actions">
         <button class="edit-btn" onclick="editTask(${index})"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg></button>
         <button class="delete-btn" onclick="deleteTask(${index})"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
@@ -42,18 +61,30 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     if (taskInput.value.trim()) {
-      tasks.push({ text: taskInput.value.trim(), completed: false });
+      tasks.push({
+        text: taskInput.value.trim(),
+        date: taskDate.value,
+        note: taskNote.value.trim(),
+        completed: false,
+      });
       taskInput.value = "";
+      taskDate.value = "";
+      taskNote.value = "";
       renderTasks();
     }
   });
   //editar tarefa
   window.editTask = (index) => {
-    const newTask = prompt("Editar Tarefa:", tasks[index].text);
-    if (newTask !== null) {
-      tasks[index].text = newTask.trim();
-      renderTasks();
-    }
+    const task = tasks[index];
+    const newTaskText = prompt("Editar tarefa:", task.text);
+    if (newTaskText === null) return;
+    const newTaskDate =
+      prompt("Editar data (YYYY-MM-DD):", task.date || "") || "";
+    const newTaskNote = prompt("Editar anotação:", task.note || "") || "";
+    task.text = newTaskText.trim();
+    task.date = newTaskDate;
+    task.note = newTaskNote.trim();
+    renderTasks();
   };
   //excluir tarefa
   window.deleteTask = (index) => {
@@ -82,8 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    const palette = ["#e9c9ff", "blueviolet", "#f8eaff", "#4caf50", "#2196f3"];
-    const completedColors = ["#4caf50", "#9be6a6", "#76c893"];
+    const palette = ["#9370db", "#b8a8ff", "#e0d5ff", "#7b68ee", "#6a5acd"];
+    const completedColors = ["#4caf50", "#9be6a6", "#76c893", "#66bb6a"];
     let completedRatio = 0;
 
     function pickColor() {

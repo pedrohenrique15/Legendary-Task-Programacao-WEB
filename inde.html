@@ -1,26 +1,46 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Legendary Task</title>
+    <meta name="description" content="Gerenciador de tarefas Legendary com design moderno e partículas animadas" />
+    <title>Legendary Task - Gerenciador de Tarefas</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <canvas id="bg-canvas" aria-hidden="true"></canvas>
-    <div class="container">
-      <h1>Legendary Task</h1>
-      <form id="task-form">
-        <input
-          type="text"
-          id="task-input"
-          placeholder="Adicione uma nova tarefa"
-          required
-        />
-        <button type="submit">Adicionar</button>
+    <main class="container">
+      <header>
+        <h1>✨ Legendary Task</h1>
+        <p class="subtitle">Organize suas tarefas com estilo</p>
+      </header>
+      <form id="task-form" aria-label="Formulário para adicionar nova tarefa">
+        <div class="task-fields">
+          <input
+            type="text"
+            id="task-input"
+            placeholder="Digite sua tarefa aqui..."
+            required
+            aria-label="Descrição da tarefa"
+          />
+          <input 
+            type="date" 
+            id="task-date"
+            aria-label="Data da tarefa"
+          />
+          <textarea
+            id="task-note"
+            placeholder="Adicione notas..."
+            rows="2"
+            aria-label="Notas adicionais"
+          ></textarea>
+        </div>
+        <button type="submit" aria-label="Adicionar nova tarefa">Adicionar Tarefa</button>
       </form>
-      <ul id="task-list"></ul>
-    </div>
+      <section aria-label="Lista de tarefas">
+        <ul id="task-list"></ul>
+      </section>
+    </main>
     <script src="script.js"></script>
   </body>
 </html>
