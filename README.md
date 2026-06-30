@@ -1,0 +1,1 @@
+Esse Projeto se trata de uma lista de tarefas (to-do-list), realizei utilizando HTML, CSS e Javascript no qual não está completo ainda, quero criar uma seção onde posso colocar datas para cada lembrete criado, e também quero criar uma parte de "anotações" onde o usuario pode anotar mensagens sobre os seus lembretes.
